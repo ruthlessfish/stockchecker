@@ -4,6 +4,7 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
 const helmet      = require('helmet');
+const mongoose    = require('mongoose');
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -11,15 +12,19 @@ const runner            = require('./test-runner');
 
 const app = express();
 
+async function connect() {
+  await mongoose.connect(process.env.DB);
+}
+
+connect()
+  .then(() => console.log('Connected to DB'))
+  .catch(err => console.log(err));
+
 app.use('/public', express.static(process.cwd() + '/public'));
-
 app.use(cors({origin: '*'})); //For FCC testing purposes only
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// security!
-app.use(helmet());
+app.use(helmet());  // security!
 
 //Index page (static HTML)
 app.route('/')
