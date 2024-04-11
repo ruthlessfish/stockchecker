@@ -13,7 +13,7 @@ module.exports = function (app) {
       if (Array.isArray(stockSymbol)) {
         stockData.stockData = [];
         stockSymbol.forEach((stock, index) => {
-          stockData.stockData.push({ stock: stock, price: 0, likes: 0 });
+          stockData.stockData.push({ stock: stock, price: 0, rel_ikes: 0 });
         });
         for (let stock of stockData.stockData) {
           const stockUrl = `${STOCK_DATA_API}stock/${stock.stock}/quote`;
