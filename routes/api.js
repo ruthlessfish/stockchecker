@@ -1,16 +1,31 @@
 "use strict";
+
 const crypto = require("crypto");
 const Like = require("../models/like");
 
-const STOCK_DATA_API =
-  "https://stock-price-checker-proxy.freecodecamp.rocks/v1/";
+/**
+ * The URL for the stock data API.
+ * @constant {string}
+ */
+const STOCK_DATA_API = "https://stock-price-checker-proxy.freecodecamp.rocks/v1/";
 
+/**
+ * Anonymizes the given IP address using SHA256 hashing algorithm.
+ * @param {string} ip - The IP address to anonymize.
+ * @returns {string} The anonymized IP address.
+ */
 function anonymizeIp(ip) {
   const hash = crypto.createHash("sha256");
   hash.update(ip);
   return hash.digest("hex");
 }
 
+/**
+ * Saves a like for the given stock and IP address.
+ * @param {string} stock - The stock symbol.
+ * @param {string} ip - The IP address of the user.
+ * @returns {Promise<void>} A promise that resolves when the like is saved.
+ */
 async function saveLike(stock, ip) {
   const isLiked = await Like.findOne({ stock: stock, ip: ip });
 
@@ -20,10 +35,23 @@ async function saveLike(stock, ip) {
   }
 }
 
+/**
+ * Gets the number of likes for the given stock.
+ * @param {string} stock - The stock symbol.
+ * @returns {Promise<number>} A promise that resolves with the number of likes.
+ */
 async function getLikes(stock) {
   return await Like.countDocuments({ stock: stock });
 }
 
+/**
+ * Gets the stock data for the given stock symbol.
+ * @param {string} stock - The stock symbol.
+ * @param {string} like - A string indicating whether the user liked the stock.
+ * @param {string} ip - The IP address of the user.
+ * @returns {Promise<Object>} A promise that resolves with the stock data.
+ * @throws {Error} If there is an error fetching the stock data.
+ */
 async function getStockData(stock, like, ip) {
   try {
     stock = stock.toUpperCase();
@@ -47,6 +75,10 @@ async function getStockData(stock, like, ip) {
   }
 }
 
+/**
+ * Initializes the API routes.
+ * @param {Object} app - The Express app object.
+ */
 module.exports = function (app) {
   app.route("/api/stock-prices").get(async function (req, res) {
     const resultJSON = {};
