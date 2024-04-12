@@ -61,12 +61,12 @@ async function getStockData(stock, like, ip) {
     }
     const data = await response.json();
     if (like === "true") {
-      await saveLike(data.stock, ip);
+      await saveLike(stock, ip);
     }
     return {
-      stock: data.stock,
+      stock: stock,
       price: data.latestPrice,
-      likes: await getLikes(data.stock),
+      likes: await getLikes(stock),
     };
   } catch (error) {
     // Handle the error here
