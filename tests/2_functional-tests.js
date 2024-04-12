@@ -2,10 +2,14 @@ const chaiHttp = require("chai-http");
 const chai = require("chai");
 const assert = chai.assert;
 const server = require("../server");
+const Like = require("../models/like");
 
 chai.use(chaiHttp);
 
 suite("Functional Tests", function () {
+    before(async () => {
+        await Like.deleteMany(); // Clear the Like collection
+    });
   test("GET /api/stock-prices - should return stock data for a single stock", function (done) {
     chai
       .request(server)
